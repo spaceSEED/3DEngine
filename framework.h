@@ -10,6 +10,9 @@
 // Windows Header Files
 #include <windows.h>
 // C RunTime Header Files
+#include <iostream>
+#include <stdexcept>
+#include <cstdlib>
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
@@ -17,3 +20,4 @@
 #include <shaderc/shaderc.hpp>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
+#include <GLFW/glfw3.h>
