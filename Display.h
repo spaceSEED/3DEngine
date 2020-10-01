@@ -9,8 +9,10 @@ class Display
 		int display_type=0;
 		VkInstance  instance;// = (VkInstance*)malloc(sizeof(VkInstance));
 		VkSurfaceKHR  surface;
-		VkPhysicalDevice  device;
+		VkPhysicalDevice  phys_device;
 		//std::vector<VkPhysicalDevice> devices;
+		VkDevice device;
+		VkQueue graphicsQueue;//TODO expand to multiple queues
 		bool isGoodDevice(VkPhysicalDevice d);
 	public:
 		GLFWwindow* window;
