@@ -23,16 +23,21 @@ Display * Engine::disp;
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 2, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_2;
 
-	disp = new Display();
+	disp = new Display(640,480);
 
-	disp->setResolution(640, 480);
-	disp->setDisplayType(0);
+	//disp->setResolution(640, 480);
+	//disp->setDisplayType(0);
 
 }
 
-int Engine::run() {
-
-	return 1;
+bool Engine::run() {
+	if(!glfwWindowShouldClose(disp->window)) {
+		glfwPollEvents();
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 int main() {

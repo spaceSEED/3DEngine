@@ -2,24 +2,24 @@
 #include "Display.h"
 #include "3DEngine.h"
 
-Display::Display() {
-	this->width = 640;
-	this->height = 480;
+Display::Display(int wid, int hei) {
+	this->width = wid;
+	this->height = hei;
 	this->display_type = 0;
 	this->instance = nullptr;
 	this->surface = nullptr;
-	this->device = nullptr;
-	this->glfwExtensionCount = 0;
+	this->device = VK_NULL_HANDLE;
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	this->window = glfwCreateWindow(this->width, this->height, "Vulkan", nullptr, nullptr);
+	this->window = glfwCreateWindow(this->width, this->height, Engine::appInfo.pApplicationName, nullptr, nullptr);
 
 	
 	VkInstanceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &Engine::appInfo;
 
+	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
 	if (glfwExtensions == NULL) {
@@ -37,12 +37,42 @@ Display::Display() {
 		&this->instance) != VK_SUCCESS) {
 		printf("Error!");
 	}
+
+	uint32_t deviceCount = 0;
+	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+	if (deviceCount == 0) {
+		printf("No Vulkan Devices!\n");
+	}
+	std::vector<VkPhysicalDevice> devices(deviceCount);
+	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+
+	for (int i = 0; i < deviceCount; i++) {
+		if (isGoodDevice(devices.at(i))) {
+			device = devices.at(i);// get a better device
+			break;
+		}
+	}
+	if (device == VK_NULL_HANDLE) {
+		printf("No suitable device available!\n");
+	}
+	
+	
 	
 }
 Display::~Display() {
 	glfwDestroyWindow(window);
 	vkDestroyInstance(instance, nullptr);
 
+}
+
+bool Display::isGoodDevice(VkPhysicalDevice d) {
+	VkPhysicalDeviceProperties pdp;
+	vkGetPhysicalDeviceProperties(d,&pdp);
+	VkPhysicalDeviceFeatures pdf;
+	vkGetPhysicalDeviceFeatures(d, &pdf);
+
+	printf(pdp.deviceName);
+	return pdp.deviceType==VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && pdf.geometryShader;//check pdf against desired graphics features?
 }
 
 

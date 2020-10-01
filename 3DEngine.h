@@ -8,5 +8,5 @@ public:
 	static Display* disp;
 	static VkApplicationInfo appInfo;
 	Engine();
-	int run();
+	bool run();
 };
