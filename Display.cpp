@@ -3,20 +3,25 @@
 #include "3DEngine.h"
 
 Display::Display() {
-	this->height = 640;
-	this->width = 480;
+	this->width = 640;
+	this->height = 480;
 	this->display_type = 0;
 	this->instance = nullptr;
 	this->surface = nullptr;
 	this->device = nullptr;
 	this->glfwExtensionCount = 0;
 
-	VkResult temp;
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	this->window = glfwCreateWindow(this->width, this->height, "Vulkan", nullptr, nullptr);
+
+	
 	VkInstanceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &Engine::appInfo;
 
-	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
 	if (glfwExtensions == NULL) {
 		printf("glfw ERROR!");
 	}
@@ -25,19 +30,18 @@ Display::Display() {
 	createInfo.ppEnabledExtensionNames = glfwExtensions;
 	createInfo.enabledLayerCount = 0;
 
-	VkAllocationCallbacks* pAllocator=nullptr;//TODO init
-	temp= vkCreateInstance(
+	//VkAllocationCallbacks * pAllocator=nullptr;// (VkAllocationCallbacks*)malloc(sizeof(VkAllocationCallbacks));//TODO init
+	if (vkCreateInstance(
 		&createInfo,
-		pAllocator,
-		this->instance);
-
-	if (temp != VK_SUCCESS) {
-		printf("Error: %d", temp);
+		nullptr,
+		&this->instance) != VK_SUCCESS) {
+		printf("Error!");
 	}
 	
 }
 Display::~Display() {
-	//vkDestroyInstance(*instance, nullptr);
+	glfwDestroyWindow(window);
+	vkDestroyInstance(instance, nullptr);
 
 }
 

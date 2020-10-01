@@ -8,10 +8,13 @@
 
 
 VkApplicationInfo Engine::appInfo = VkApplicationInfo{};
-Display * Engine::disp = new Display();
+Display * Engine::disp;
 
  Engine::Engine() {
 	glfwInit();
+	if (!glfwVulkanSupported()) {
+		printf("Vulkan not supported!\n");
+	}
 
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "3DEngine";
@@ -19,6 +22,8 @@ Display * Engine::disp = new Display();
 	appInfo.pEngineName = "3DEngine";
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 2, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_2;
+
+	disp = new Display();
 
 	disp->setResolution(640, 480);
 	disp->setDisplayType(0);

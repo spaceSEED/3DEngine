@@ -7,15 +7,14 @@ class Display
 		int height=0;
 		int width=0;
 		int display_type=0;
-		VkInstance * instance=nullptr;
-		VkSurfaceKHR * surface = nullptr;
-		VkPhysicalDevice * device = nullptr;
+		GLFWwindow* window;
+		VkInstance  instance;// = (VkInstance*)malloc(sizeof(VkInstance));
+		VkSurfaceKHR  surface;
+		VkPhysicalDevice  device;
 		uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions;
 	public:
 		Display();
 		virtual ~Display();
-		void init();
 		void setDisplayType(int type);//define types: windowed==0; fullscreen==1;
 		void setResolution(int wid, int hei);
 		int getWid();
